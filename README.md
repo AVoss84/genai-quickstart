@@ -1,6 +1,6 @@
-# Template for generic Python package (Data Science) 
+# GenAI quick start - Entity extraction tutorial
 
-This is a blueprint of a generic end-to-end data science project, i.e. building a Python package along the usual steps: data preprocessing, model training, prediction, postprocessing, REST API construction (for real-time model serving) and containerization for final deployment as a microservice.
+This little tutorial focuses on the task of entity extraction from a PDF file using OCR + GenAI. The use of LangChain is illustrated as a convenient tool library.
 
 ## Package structure
 
