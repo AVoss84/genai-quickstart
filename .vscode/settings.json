@@ -1,0 +1,11 @@
+{
+    //"python.defaultInterpreterPath": "/Users/mn9lu5b/miniforge3/envs/proj_templ/bin/python",
+    "restructuredtext.syntaxHighlighting.disabled": true,
+    "restructuredtext.preview.docutils.disabled": true,
+    "python.testing.pytestArgs": [
+        "src"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "python.REPL.enableREPLSmartSend": false
+}

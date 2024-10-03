@@ -1,0 +1,11 @@
+input:
+    s3:
+        bucket: sagemaker-foundry-610968375774-eu-central-1
+        key: my_key
+output:
+    pg:
+        secret_name: my_secret_name
+        dbname: my_db_name
+        table_name: results
+    s3:
+        bucket: sagemaker-foundry-610968375774-eu-central-1
