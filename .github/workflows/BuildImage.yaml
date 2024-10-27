@@ -1,0 +1,57 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# GitHub recommends pinning actions to a commit SHA.
+# To get a newer version, you will need to update the SHA.
+# You can also reference a tag or branch, but the action may change without warning.
+
+name: Package code
+
+on:
+    workflow_dispatch:
+      inputs:
+        imageTag: 
+          default: 'latest'
+          required: false
+
+env:
+    AWS_REGION: eu-central-1                                                      # set this to your preferred AWS region, e.g. us-west-1
+    ECR_REPOSITORY: ${{ inputs.repository }}                                      # set this to your Amazon ECR repository name
+
+jobs:
+    deploy:
+        name: Build Docker Image
+        runs-on: adp-runner-medium
+        environment: development
+
+        steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+
+        - name: Configure AWS credentials
+          uses: aws-actions/configure-aws-credentials@v4
+          with:
+              role-to-assume: arn:aws:iam::610968375774:role/cdo-aac-github-actions-deploy
+              aws-access-key-id: ${{ secrets.AWS_GH_TU_KEY_ID }}
+              aws-secret-access-key: ${{ secrets.AWS_GH_TU_ACCESS_KEY }}
+              aws-region: eu-central-1
+              role-skip-session-tagging: true
+
+        - name: Build Image
+          id: build-image
+          uses: AgileDeliveryPlatform/build-images-action/build@v1
+          with:
+            scm_repository: CDO-AAC/${{ github.event.repository.name }}
+            github_token: ${{ secrets.GH_ACTIONS_TOKEN }}
+            target_registry: 610968375774.dkr.ecr.eu-central-1.amazonaws.com
+            target_image: ${{ github.event.repository.name }}
+            target_version: ${{ inputs.sha }}
+            target_registry_user:  ${{ secrets.AWS_GH_TU_KEY_ID }}
+            target_registry_password: ${{ secrets.AWS_GH_TU_ACCESS_KEY }}
+            target_aws_role_arn: arn:aws:iam::610968375774:role/cdo-aac-github-actions-deploy
+            tag_as_latest: true
+            export_cache: false
+            import_cache: false
+            build_args: --build_args AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID

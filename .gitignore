@@ -125,3 +125,7 @@ dmypy.json
 
 */data/
 /logs/
+
+
+/.chainlit/
+src/notebooks/.chainlit/

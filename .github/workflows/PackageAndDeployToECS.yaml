@@ -1,0 +1,32 @@
+name: Package and Deploy to ECS
+
+on: 
+    workflow_dispatch:
+        inputs:
+            imageTag:
+                description: 'Image to deploy with'
+                required: false
+                default: 'latest'
+
+jobs: 
+    package-code:
+        uses: CDO-AAC/aws_infrastructure_spoke/.github/workflows/BuildImage.yaml@main
+        with:
+            repository: ${{ github.event.repository.name }}
+            sha: ${{ github.sha }}
+            imageTag: ${{ github.event.inputs.imageTag }}
+        secrets:
+            AWS_GH_TU_KEY_ID: ${{ secrets.AWS_GH_TU_KEY_ID }}
+            AWS_GH_TU_ACCESS_KEY: ${{ secrets.AWS_GH_TU_ACCESS_KEY }}
+            GH_ACTIONS_TOKEN: ${{ secrets.GH_ACTIONS_TOKEN }}
+    deploy-to-ecs:
+        uses: CDO-AAC/aws_infrastructure_spoke/.github/workflows/DeployToECS.yaml@main
+        needs: package-code
+        with:
+            repository: ${{ github.event.repository.name }}
+            sha: ${{ github.sha }}
+            imageTag: ${{ github.event.inputs.imageTag }}
+        secrets:
+            AWS_GH_TU_KEY_ID: ${{ secrets.AWS_GH_TU_KEY_ID }}
+            AWS_GH_TU_ACCESS_KEY: ${{ secrets.AWS_GH_TU_ACCESS_KEY }}
+            GH_ACTIONS_TOKEN: ${{ secrets.GH_ACTIONS_TOKEN }}

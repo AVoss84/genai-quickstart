@@ -1,0 +1,44 @@
+name: TestBlocks
+
+on: workflow_dispatch
+
+jobs:
+  build_push:
+    name: Package the application and push to AWS ECR
+    runs-on: adp-runner-small
+
+    steps:
+    - name: Get code
+      uses: actions/checkout@v3
+    
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::610968375774:role/cdo-aac-github-actions-deploy
+        aws-access-key-id: ${{ secrets.AWS_GH_TU_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_GH_TU_ACCESS_KEY }}
+        aws-region: eu-central-1
+        role-skip-session-tagging: true
+
+    # - name: Copy TaskDef to Workspace
+    #   shell: bash
+    #   run: |
+    #     cp .taskDefs/task-def-skeleton.json $GITHUB_WORKSPACE/
+
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Checkout TaskDef
+      uses: actions/checkout@v4
+      with:
+        repository: CDO-AAC/aws_infrastructure_spoke
+        token: ${{ secrets.GH_ACTIONS_TOKEN }}
+        sparse-checkout: |
+          .taskDefs/task-def-skeleton.json
+        sparse-checkout-cone-mode: true
+        path: .taskDefs/task-def-skeleton.json
+
+    - name: Check files
+      shell: bash
+      run: |
+        aws s3 ls

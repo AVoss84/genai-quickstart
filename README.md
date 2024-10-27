@@ -68,3 +68,7 @@ To install the package locally execute the following steps:
 pip install -r requirements.txt         
 pip install -e .               # install my_package in editable mode
 ```
+
+```bash
+chainlit run chatbot.py   # start chainlit server for chatting
+```
